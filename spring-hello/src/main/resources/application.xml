@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="greeti" class="com.accenture.spring.Greetings">
+		<property name="greet" value="Zack die Bohne"></property>
+	</bean>
+
+	<!-- <bean id="personFactoryBean" class="com.accenture.spring.PersonFactory" 
+		factory-method="createPersonWithStaticMethod"> </bean> -->
+
+	<!-- <bean id="personFactoryBean" class="com.accenture.spring.PersonFactory"> 
+		</bean> <bean id="myBean" factory-bean="personFactoryBean" factory-method="createPersonWithInstanceMethod"> 
+		</bean> -->
+	<!-- <bean id="personBean" class="com.accenture.spring.Person"> <constructor-arg 
+		type="java.lang.String" index="0" value="Blah"/> <constructor-arg type="int" 
+		index="1" value="10"/> </bean> -->
+
+	<bean id="personBean" class="com.accenture.spring.Person">
+		<property name="name" value="BlahBlah"></property>
+		<property name="age" value="10"></property>
+
+		<property name="list">
+			<list value-type="java.lang.Float">
+				<value>10.1</value>
+				<value>12</value>
+			</list>
+		</property>
+
+	</bean>
+
+	<bean id="messi" class="com.accenture.spring.Message" scope="prototype">
+		<property name="greet">
+			<ref bean="greeti" />
+		</property>
+	</bean>
+
+	<bean id="mY" class="com.accenture.spring.MyMethodInterceptor"></bean>
+
+	<bean id="mP" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="messi"></property>
+		<property name="interceptorNames">
+			<list>
+				<idref local="mY"/>
+			</list>
+		</property>
+		<property name="proxyTargetClass" value="false"></property>
+
+	</bean>
+
+	<bean id="logger" class="com.accenture.spring.Logging"></bean>
+	
+	<aop:config>
+		<aop:aspect ref="logger">
+			<aop:before method="before" pointcut="execution(* *..*.message(..))"/>
+			<aop:after method="after" pointcut="execution(* *..*.message(..))"/>
+		</aop:aspect>
+	</aop:config>	
+	
+</beans>
